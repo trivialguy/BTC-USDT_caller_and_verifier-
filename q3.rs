@@ -5,7 +5,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio::time::{self, Duration};
 use tokio::task;
-use hmac::{Hmac};
+use hmac::{Hmac,Mac};
 use sha2::Sha256;
 
 #[derive(Deserialize, Debug, Clone)]
@@ -27,14 +27,14 @@ impl ThreadData {
     // Function to verify the signature using the secret key
     fn verify_signature(&self) -> bool {
         // Create an HMAC instance with SHA-256
-        let mut hmac = Hmac::<Sha256>::new_varkey(&self.secret_key).expect("HMAC creation failed");
+        let mut hmac = Hmac::<Sha256>::new_from_slice(&self.secret_key).expect("HMAC creation failed");
 
         // Convert the average to bytes and update the HMAC
         hmac.update(&self.average.to_be_bytes());
 
         // Verify the signature
         let signature_bytes = hex::decode(&self.signed_message).expect("Invalid hex");
-        hmac.verify(&signature_bytes.into()).is_ok()
+        hmac.verify_slice(&signature_bytes).is_ok()
     }
 }
 
@@ -123,7 +123,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 // Function to sign a message using HMAC with SHA-256
 fn sign_message(secret_key: &[u8], message: &f64) -> String {
     // Create an HMAC instance with SHA-256
-    let mut hmac = Hmac::<Sha256>::new_varkey(secret_key).expect("HMAC creation failed");
+    let mut hmac = Hmac::<Sha256>::new_from_slice(secret_key).expect("HMAC creation failed");
 
     // Convert the message to bytes and update the HMAC
     hmac.update(&message.to_be_bytes());
