@@ -58,7 +58,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let responses = responses.lock().await.clone();
 
     // Print all collected responses
-    println!("All Responses: {:#?}", responses);
+    // println!("All Responses: {:#?}", responses);
 
     let mut data_file = File::create("data.txt").expect("creation failed");
 
@@ -112,10 +112,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let avg_of_avgs = aggregate(&thread_data_vec);
     println!("Average of Averages: {:.2}", avg_of_avgs);
 
-    println!(
-        "Cache complete. The averages of USD price of BTC are: {:?}",
-        thread_data_vec
-    );
 
     Ok(())
 }
@@ -169,10 +165,10 @@ async fn task_handler(responses: Arc<Mutex<Vec<Ticker>>>) {
             Ok(resp) => {
                 if resp.status().is_success() {
                     let body = resp.text().await.unwrap();
-                    println!("Response Body: {}", body);
+                    // println!("Response Body: {}", body);
 
                     let ticker: Ticker = serde_json::from_str(&body).unwrap();
-                    println!("Parsed Response: {:#?}", ticker);
+                    // println!("Parsed Response: {:#?}", ticker);
 
                     // Lock the mutex asynchronously, update the vector, and unlock immediately
                     let mut response_data = responses.lock().await;
