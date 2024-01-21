@@ -67,11 +67,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         if resp.status().is_success() {
                             // Print the response body
                             let body = resp.text().await?;
-                            println!("Response Body: {}", body);
+                            // println!("Response Body: {}", body);
 
                             // Parse the JSON response into a Ticker struct
                             let ticker: Ticker = serde_json::from_str(&body)?;
-                            println!("Parsed Response: {:#?}", ticker);
+                            // println!("Parsed Response: {:#?}", ticker);
 
                             // Collect the response in the vector
                             responses.push(ticker);
@@ -94,7 +94,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Print all collected responses
-    println!("All Responses: {:#?}", responses);
+    // println!("All Responses: {:#?}", responses);
     let mut data_file = File::create("data.txt").expect("creation failed");
 
     // Write contents to the file
